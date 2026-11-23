@@ -1,0 +1,16 @@
+{
+  "1_chronological_split": true,
+  "train_period": "2015-01-02 ~ 2023-04-20 (2089)",
+  "validation_period": "2023-04-21 ~ 2024-06-28 (299)",
+  "test_period": "2024-07-01 ~ 2026-11-13 (597)",
+  "2_scaler_fit_last_date": "2023-04-20",
+  "2_scaler_fit_within_train": true,
+  "2_scaler_mu_sd": [
+    0.0009169275408166063,
+    0.018740599303442598
+  ],
+  "4_feature_causality_test": true,
+  "3_window_train_max_input_lt_target": true,
+  "3_window_validation_max_input_lt_target": true,
+  "3_window_test_max_input_lt_target": true
+}

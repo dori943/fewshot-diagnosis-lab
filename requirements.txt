@@ -1,0 +1,10 @@
+torch>=2.1
+torchvision>=0.16
+numpy
+pandas
+scipy
+scikit-learn
+matplotlib
+pillow
+yfinance>=0.2.40
+tabulate

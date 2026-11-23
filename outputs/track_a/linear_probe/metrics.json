@@ -1,0 +1,35 @@
+{
+  "run": "linear_probe",
+  "strategy": "linear_probe",
+  "arch": "resnet18",
+  "aug": "auto",
+  "img_size": 128,
+  "trainable_params": 2565,
+  "best_epoch": 6,
+  "epochs_ran": 13,
+  "train_loss": 0.0715881173685193,
+  "train_acc": 0.985,
+  "val_loss": 0.8071454834938049,
+  "val_acc": 0.75,
+  "test_loss": 0.8901903076171875,
+  "test_acc": 0.756,
+  "n_errors": 122,
+  "diagnosis": {
+    "train_loss": 0.0715881173685193,
+    "val_loss": 0.8071454834938049,
+    "gap": 0.7355573661252855,
+    "rel_gap": 0.9113070458393158,
+    "rel_train": 0.044480198220414754,
+    "state": "High Variance (Overfitting)",
+    "fix": "정규화(Dropout↑, Weight Decay/L2), 데이터 증강, Early Stopping, Freeze 범위↑, 데이터 추가."
+  },
+  "minutes": 0.20476757685343425,
+  "n_train": 200,
+  "classes": [
+    "bird",
+    "cat",
+    "deer",
+    "dog",
+    "horse"
+  ]
+}
