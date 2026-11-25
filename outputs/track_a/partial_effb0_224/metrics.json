@@ -1,0 +1,35 @@
+{
+  "run": "partial_effb0_224",
+  "strategy": "partial",
+  "arch": "efficientnet_b0",
+  "aug": "auto",
+  "img_size": 224,
+  "trainable_params": 3162145,
+  "best_epoch": 14,
+  "epochs_ran": 15,
+  "train_loss": 0.02490805398672819,
+  "train_acc": 1.0,
+  "val_loss": 0.4568265163898468,
+  "val_acc": 0.87,
+  "test_loss": 0.536057424545288,
+  "test_acc": 0.806,
+  "n_errors": 97,
+  "diagnosis": {
+    "train_loss": 0.02490805398672819,
+    "val_loss": 0.4568265163898468,
+    "gap": 0.4319184624031186,
+    "rel_gap": 0.9454759014788184,
+    "rel_train": 0.01547624409385104,
+    "state": "High Variance (Overfitting)",
+    "fix": "정규화(Dropout↑, Weight Decay/L2), 데이터 증강, Early Stopping, Freeze 범위↑, 데이터 추가."
+  },
+  "minutes": 0.6972169280052185,
+  "n_train": 200,
+  "classes": [
+    "bird",
+    "cat",
+    "deer",
+    "dog",
+    "horse"
+  ]
+}

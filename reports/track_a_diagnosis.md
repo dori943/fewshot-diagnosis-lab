@@ -8,7 +8,9 @@
 | linear_probe | 2,565 | 0.0716 | 0.8071 | +0.7356 | 0.985 | 0.750 | 0.756 | 122 | High Variance (Overfitting) |
 | partial | 8,396,293 | 0.0183 | 0.5341 | +0.5158 | 1.000 | 0.820 | 0.750 | 125 | High Variance (Overfitting) |
 | partial_aug_strong | 8,396,293 | 0.0436 | 0.6070 | +0.5634 | 1.000 | 0.800 | 0.752 | 124 | High Variance (Overfitting) |
+| partial_effb0_224 | 3,162,145 | 0.0249 | 0.4568 | +0.4319 | 1.000 | 0.870 | 0.806 | 97 | High Variance (Overfitting) |
 | partial_res224 | 8,396,293 | 0.4354 | 0.8334 | +0.3979 | 1.000 | 0.820 | 0.778 | 111 | High Variance (Overfitting) |
+| partial_res224_only | 8,396,293 | 0.0078 | 0.5299 | +0.5221 | 1.000 | 0.800 | 0.772 | 114 | High Variance (Overfitting) |
 | full | 11,179,077 | 0.0580 | 0.6190 | +0.5610 | 0.990 | 0.780 | 0.714 | 143 | High Variance (Overfitting) |
 
 ## Run별 처방
@@ -17,7 +19,9 @@
 - **linear_probe** — High Variance (Overfitting): 정규화(Dropout↑, Weight Decay/L2), 데이터 증강, Early Stopping, Freeze 범위↑, 데이터 추가.
 - **partial** — High Variance (Overfitting): 정규화(Dropout↑, Weight Decay/L2), 데이터 증강, Early Stopping, Freeze 범위↑, 데이터 추가.
 - **partial_aug_strong** — High Variance (Overfitting): 정규화(Dropout↑, Weight Decay/L2), 데이터 증강, Early Stopping, Freeze 범위↑, 데이터 추가.
+- **partial_effb0_224** — High Variance (Overfitting): 정규화(Dropout↑, Weight Decay/L2), 데이터 증강, Early Stopping, Freeze 범위↑, 데이터 추가.
 - **partial_res224** — High Variance (Overfitting): 정규화(Dropout↑, Weight Decay/L2), 데이터 증강, Early Stopping, Freeze 범위↑, 데이터 추가.
+- **partial_res224_only** — High Variance (Overfitting): 정규화(Dropout↑, Weight Decay/L2), 데이터 증강, Early Stopping, Freeze 범위↑, 데이터 추가.
 - **scratch** — High Variance (Overfitting): 정규화(Dropout↑, Weight Decay/L2), 데이터 증강, Early Stopping, Freeze 범위↑, 데이터 추가.
 
 ![strategy](../outputs/track_a/strategy_comparison.png)
@@ -26,5 +30,7 @@
 ![linear_probe](../outputs/track_a/linear_probe/loss_curve.png)
 ![partial](../outputs/track_a/partial/loss_curve.png)
 ![partial_aug_strong](../outputs/track_a/partial_aug_strong/loss_curve.png)
+![partial_effb0_224](../outputs/track_a/partial_effb0_224/loss_curve.png)
 ![partial_res224](../outputs/track_a/partial_res224/loss_curve.png)
+![partial_res224_only](../outputs/track_a/partial_res224_only/loss_curve.png)
 ![scratch](../outputs/track_a/scratch/loss_curve.png)

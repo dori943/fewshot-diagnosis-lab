@@ -1,0 +1,35 @@
+{
+  "run": "partial_res224_only",
+  "strategy": "partial",
+  "arch": "resnet18",
+  "aug": "auto",
+  "img_size": 224,
+  "trainable_params": 8396293,
+  "best_epoch": 14,
+  "epochs_ran": 15,
+  "train_loss": 0.007821412645280362,
+  "train_acc": 1.0,
+  "val_loss": 0.5299421942234039,
+  "val_acc": 0.8,
+  "test_loss": 0.6711279063224792,
+  "test_acc": 0.772,
+  "n_errors": 114,
+  "diagnosis": {
+    "train_loss": 0.007821412645280362,
+    "val_loss": 0.5299421942234039,
+    "gap": 0.5221207815781236,
+    "rel_gap": 0.9852410079240017,
+    "rel_train": 0.004859716914118994,
+    "state": "High Variance (Overfitting)",
+    "fix": "정규화(Dropout↑, Weight Decay/L2), 데이터 증강, Early Stopping, Freeze 범위↑, 데이터 추가."
+  },
+  "minutes": 0.45006781021753944,
+  "n_train": 200,
+  "classes": [
+    "bird",
+    "cat",
+    "deer",
+    "dog",
+    "horse"
+  ]
+}

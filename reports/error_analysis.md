@@ -165,10 +165,41 @@
 
 ## 5. 개선 실험 효과 (오차 분석 → 처방 → 재학습)
 
+기준 모델: ResNet18 partial, 128px (Test Acc 0.750). 각 처방은 **기준에서 아래 표의 "적용 방식" 항목만 바꿔** 재학습하고, 기준에서 틀렸던 125장 중 몇 장을 맞추게 됐는지(태그별 회복률)로 효과를 측정했다. 224px 실험은 메모리 제약으로 배치 16 사용.
+
+| 처방 | 노린 태그 | 적용 방식 | Test Acc |
+|---|---|---|---:|
+| 처방 1-a | 모델 한계 | 입력 크기 128 → 224px (bilinear 보간) | 0.772 (+2.2%p) |
+| 처방 1-b | 모델 한계 (고신뢰 오답) | 224px + Label Smoothing 0.1 | 0.778 (+2.8%p) |
+| 처방 1-c | 모델 한계 · 클래스 유사성 | Backbone 교체 ResNet18 → EfficientNet-B0 (224px) | 0.806 (+5.6%p) |
+| 처방 2 | 데이터 품질 · 배경/잡음 | 강한 증강 + 정규화 (128px) | 0.752 (+0.2%p) |
+
+### 5-1. 처방 1-a: 입력 크기 128 → 224px (bilinear 보간)
+
+- **노린 태그**: 모델 한계
+- **적용 방식**: `--img_size 224`만 변경 (나머지는 기준과 동일). 원본 32px 이미지를 bilinear 보간으로 224px까지 **확대**해 입력한다(화질을 높이는 초해상도가 아님). 새 픽셀 정보는 없지만, ImageNet 사전학습 때의 객체 크기(224px)와 스케일을 맞춰 사전학습 특징을 더 잘 쓰게 한다. 마지막 특징맵이 4×4 → 7×7로 커진다.
+
+- Before `outputs/track_a/partial` Test Acc **0.750** → After `outputs/track_a/partial_res224_only` Test Acc **0.772** (**+2.2%p**)
+- 새로 틀린 이미지(회귀): 29건
+
+**태그별 회복률** (Before에서 틀린 이미지 중 After에서 맞춘 비율)
+
+| tag     |   n |   recovered |   recovery(%) |
+|:--------|----:|------------:|--------------:|
+| 데이터 품질  |  22 |           5 |          22.7 |
+| 모델 한계   |  57 |          24 |          42.1 |
+| 배경/잡음   |  11 |           2 |          18.2 |
+| 클래스 유사성 |  35 |           9 |          25.7 |
+
+### 5-2. 처방 1-b: 224px + Label Smoothing 0.1
+
+- **노린 태그**: 모델 한계 (고신뢰 오답)
+- **적용 방식**: 처방 1-a에 `--label_smoothing 0.1` 추가. 정답 확률 목표를 1.0이 아닌 0.9로 낮춰, 틀리면서도 확신하는 과신(평균 신뢰도 0.6~0.7)을 완화하려는 목적.
+
 - Before `outputs/track_a/partial` Test Acc **0.750** → After `outputs/track_a/partial_res224` Test Acc **0.778** (**+2.8%p**)
 - 새로 틀린 이미지(회귀): 26건
 
-### 태그별 회복률 (Before에서 틀린 이미지 중 After에서 맞춘 비율)
+**태그별 회복률** (Before에서 틀린 이미지 중 After에서 맞춘 비율)
 
 | tag     |   n |   recovered |   recovery(%) |
 |:--------|----:|------------:|--------------:|
@@ -177,12 +208,32 @@
 | 배경/잡음   |  11 |           3 |          27.3 |
 | 클래스 유사성 |  35 |           9 |          25.7 |
 
-## 5. 개선 실험 효과 (오차 분석 → 처방 → 재학습)
+### 5-3. 처방 1-c: Backbone 교체 ResNet18 → EfficientNet-B0 (224px)
+
+- **노린 태그**: 모델 한계 · 클래스 유사성
+- **적용 방식**: `--arch efficientnet_b0 --img_size 224`. 같은 Partial 전략(마지막 블록 3개 + 분류기 학습)을 유지하고, ImageNet 특징의 질이 더 좋은 Backbone(top-1 약 78% vs ResNet18 약 70%)으로 교체. 학습 파라미터는 8.4M → 3.2M으로 오히려 적다.
+
+- Before `outputs/track_a/partial` Test Acc **0.750** → After `outputs/track_a/partial_effb0_224` Test Acc **0.806** (**+5.6%p**)
+- 새로 틀린 이미지(회귀): 30건
+
+**태그별 회복률** (Before에서 틀린 이미지 중 After에서 맞춘 비율)
+
+| tag     |   n |   recovered |   recovery(%) |
+|:--------|----:|------------:|--------------:|
+| 데이터 품질  |  22 |           8 |          36.4 |
+| 모델 한계   |  57 |          30 |          52.6 |
+| 배경/잡음   |  11 |           4 |          36.4 |
+| 클래스 유사성 |  35 |          16 |          45.7 |
+
+### 5-4. 처방 2: 강한 증강 + 정규화 (128px)
+
+- **노린 태그**: 데이터 품질 · 배경/잡음
+- **적용 방식**: `--aug strong --dropout 0.5 --weight_decay 1e-3`. 어두움/저대비 → ColorJitter(밝기·대비·채도), 흐림 → GaussianBlur, 가림·작은 객체 → RandomErasing + 작은 scale의 RandomResizedCrop. 동시에 High Variance 대응으로 Dropout 0.2→0.5, Weight decay(L2) 1e-4→1e-3.
 
 - Before `outputs/track_a/partial` Test Acc **0.750** → After `outputs/track_a/partial_aug_strong` Test Acc **0.752** (**+0.2%p**)
 - 새로 틀린 이미지(회귀): 18건
 
-### 태그별 회복률 (Before에서 틀린 이미지 중 After에서 맞춘 비율)
+**태그별 회복률** (Before에서 틀린 이미지 중 After에서 맞춘 비율)
 
 | tag     |   n |   recovered |   recovery(%) |
 |:--------|----:|------------:|--------------:|
